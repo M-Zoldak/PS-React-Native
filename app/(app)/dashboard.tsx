@@ -11,10 +11,6 @@ import { CurrentUserType } from "../../interfaces/EntityTypes/UserType";
 import { AppType } from "../../interfaces/EntityTypes/AppType";
 import { Select } from "native-base";
 
-function AppChooser() {
-  const { appData, updateCurrentUser } = useAppDataContext();
-}
-
 export default function Dashboard() {
   const [data, setData] = useState("");
 
@@ -26,7 +22,7 @@ export default function Dashboard() {
 
       {/* <Text>{data}</Text> */}
 
-      <Button onPress={loadData} title="Load data" />
+      {/* <Button onPress={loadData} title="Load data" /> */}
     </ViewContainer>
   );
 }

@@ -7,12 +7,14 @@ import { SelectDataType } from "../../../interfaces/DefaultTypes";
 import { http_methods } from "../../../functions/HTTPMethods";
 import ViewContainer from "../../../components/ViewContainer";
 import { H1, H2, H3, Text } from "../../../components/Themed";
-import { Box } from "native-base";
+import { Box, Pressable } from "native-base";
 import CommonList from "../../../components/Lists/CommonList";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useIsFocused } from "@react-navigation/native";
 import Loader from "../../../components/Loader";
 import Notes from "../../../components/Notes";
+import { ProjectStateType } from "../../../interfaces/EntityTypes/ProjectStateType";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Project() {
   const params = useLocalSearchParams();
@@ -74,7 +76,6 @@ export default function Project() {
         <Row>
           <Box style={{ width: "100%" }}>
             <ButtonToolbar style={{ marginBottom: "20px" }}>
-              <Backlink link="/projects" />
               <SimpleCreateModal<TaskType>
                 entity="tasks"
                 prependURI={`/projects/${params.id}`}
@@ -164,6 +165,23 @@ export default function Project() {
               )}`
             : ""}
         </Text>
+        <Text>{project?.client ? `Client: ${project?.client.name}` : ""}</Text>
+        {project?.website && (
+          <Text>
+            Website:
+            <Link
+              href={{
+                pathname: "/(app)/website/options",
+
+                params: {
+                  id: project.website.id,
+                },
+              }}
+            >
+              {project?.website.domain}
+            </Link>
+          </Text>
+        )}
         {/* {project && (
           <div style={{ marginBlock: "10px" }}>
             <SelectPicker
@@ -189,31 +207,60 @@ export default function Project() {
             )}
           </div>
         )} */}
-        {/* {project && (
-          <div style={{ marginBottom: "10px" }}>
-            <SelectPicker
-              label={"Website: "}
-              data={websitesSelect}
-              value={project?.website?.id}
-              onChange={updateProjectWebsite}
-              readOnly={
-                !appData?.currentUser?.currentAppRole?.permissions?.projects
-                  .hasOptions
-              }
-            />
-            {project?.website?.id && (
-              <Button
-                style={{ marginLeft: "15px" }}
-                as={Link}
-                appearance="ghost"
-                color="cyan"
-                to={`/websites/${project.website.id}`}
-              >
-                To website
-              </Button>
-            )}
-          </div>
-        )} */}
+        {console.log(app?.projectStates)}
+        {
+          project &&
+            app?.projectStates.map((state: ProjectStateType, index: number) => {
+              <Box key={index}>
+                <H2>Project state</H2>
+                <Pressable
+                  px={4}
+                  py={4}
+                  bg={"white"}
+                  borderBottomWidth={1}
+                  borderBottomColor={"gray.400"}
+                  display={"flex"}
+                  flexDirection={"row"}
+                  alignContent={"space-between"}
+                  justifyContent={"space-between"}
+                  onPress={() => {
+                    setProjectState(state.id);
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 18,
+                    }}
+                  >
+                    {app.name}
+                  </Text>
+                </Pressable>
+              </Box>;
+            })
+          // <div style={{ marginBottom: "10px" }}>
+          //   <SelectPicker
+          //     label={"Website: "}
+          //     data={websitesSelect}
+          //     value={project?.website?.id}
+          //     onChange={updateProjectWebsite}
+          //     readOnly={
+          //       !appData?.currentUser?.currentAppRole?.permissions?.projects
+          //         .hasOptions
+          //     }
+          //   />
+          //   {project?.website?.id && (
+          //     <Button
+          //       style={{ marginLeft: "15px" }}
+          //       as={Link}
+          //       appearance="ghost"
+          //       color="cyan"
+          //       to={`/websites/${project.website.id}`}
+          //     >
+          //       To website
+          //     </Button>
+          //   )}
+          // </div>
+        }
       </Box>
       <H2>Project tasks</H2>
       {tasks && (

@@ -7,7 +7,7 @@ declare module "expo-router" {
   export * from 'expo-router/build';
 
   // prettier-ignore
-  type StaticRoutes = `/` | `/(app)/_layout` | `/_layout` | `/(app)/app/list` | `/app/list` | `/(app)/client/addressOptions` | `/client/addressOptions` | `/(app)/client/client` | `/client/client` | `/(app)/client/contactOptions` | `/client/contactOptions` | `/(app)/client/list` | `/client/list` | `/(app)/dashboard` | `/dashboard` | `/(app)/projects/list` | `/projects/list` | `/(app)/projects/project` | `/projects/project` | `/(app)/website/list` | `/website/list` | `/(app)/website/options` | `/website/options` | `/(tabs)/_layout` | `/(tabs)/` | `/(tabs)` | `/(tabs)/login` | `/login` | `/(tabs)/register` | `/register` | `/+html` | `/appsModal` | `/createModal` | `/entityView` | `/modal`;
+  type StaticRoutes = `/` | `/(app)/app/list` | `/app/list` | `/(app)/client/addressOptions` | `/client/addressOptions` | `/(app)/client/client` | `/client/client` | `/(app)/client/contactOptions` | `/client/contactOptions` | `/(app)/client/list` | `/client/list` | `/(app)/dashboard` | `/dashboard` | `/(app)/projects/list` | `/projects/list` | `/(app)/projects/project` | `/projects/project` | `/(app)/website/list` | `/website/list` | `/(app)/website/options` | `/website/options` | `/(app)/_layout` | `/_layout` | `/(tabs)/` | `/(tabs)` | `/(tabs)/login` | `/login` | `/(tabs)/register` | `/register` | `/(tabs)/_layout` | `/+html` | `/appsModal` | `/createModal` | `/entityView` | `/modal` | `/(app)/app/app` | `/app/app`;
   // prettier-ignore
   type DynamicRoutes<T extends string> = `/${CatchAllRoutePart<T>}`;
   // prettier-ignore

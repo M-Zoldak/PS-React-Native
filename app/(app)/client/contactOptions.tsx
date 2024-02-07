@@ -5,6 +5,7 @@ import { ContactPersonType } from "../../../interfaces/EntityTypes/ContactPerson
 import { http_methods } from "../../../functions/HTTPMethods";
 import ViewContainer from "../../../components/ViewContainer";
 import FormComponent from "../../../components/Forms/FormComponent";
+import Loader from "../../../components/Loader";
 
 export default function ContactOptions() {
   const { appData } = useAppDataContext();
@@ -87,30 +88,17 @@ export default function ContactOptions() {
   // };
 
   return (
-    <ViewContainer
-    // title={contact ? `Contact options` : "Loading..."}
-    // activePage="Clients"
-    >
-      {/* <Backlink link={`/clients/${params.id}/options`} /> */}
-
-      {/* <ContentLoader loaded={loaded}> */}
-      {/* <MainTitle>
-          {contact && `${contact?.firstName} ${contact?.lastName} options`}
-        </MainTitle> */}
-
-      <FormComponent<ContactPersonType>
-        entity="contacts"
-        prependURI={`/clients/${params.id}`}
-        updatePath={{ id: params.contactId as string }}
-        onSuccess={(contact) => {
-          setContact(contact);
-          // addNotification({
-          //   text: `Customer was succesfully updated.`,
-          //   notificationProps: { type: "success" },
-          // });
-        }}
-      />
-      {/* </ContentLoader> */}
+    <ViewContainer>
+      <Loader loaded={loaded}>
+        <FormComponent<ContactPersonType>
+          entity="contacts"
+          prependURI={`/clients/${params.id}`}
+          updatePath={{ id: params.contactId as string }}
+          onSuccess={(contact) => {
+            setContact(contact);
+          }}
+        />
+      </Loader>
     </ViewContainer>
   );
 }

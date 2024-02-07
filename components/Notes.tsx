@@ -11,6 +11,9 @@ export default function Notes({ notes, postUrl }: NotesType) {
   const [notesInside, setNotes] = useState(notes);
 
   const addNote = () => {
+    if (newNote.trim().length == 0) {
+      return;
+    }
     setNewNote("");
     http_methods.post<NoteType>(postUrl, { text: newNote }).then((note) => {
       setNotes([note, ...notesInside]);
@@ -21,11 +24,7 @@ export default function Notes({ notes, postUrl }: NotesType) {
     <>
       <Box mt={"auto"}>
         <H2 style={{ marginTop: 16, marginBottom: 16 }}>Notes</H2>
-        <Input
-          value={newNote}
-          onChangeText={setNewNote}
-          numberOfLines={4}
-        ></Input>
+        <Input value={newNote} onChangeText={setNewNote} numberOfLines={4} />
         <Button
           style={{ marginTop: 16 }}
           onPress={addNote}
@@ -51,7 +50,7 @@ export default function Notes({ notes, postUrl }: NotesType) {
                 flexDir={"row"}
                 // h={70}
                 borderWidth={1}
-                borderBottomWidth={notes[notes.length - 1] == note ? 1 : 0}
+                borderBottomWidth={Object.is(notes.length - 1, index) ? 0 : 1}
                 borderColor={"gray.200"}
                 alignItems={"center"}
                 justifyContent={"space-between"}

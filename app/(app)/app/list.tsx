@@ -8,6 +8,7 @@ import { Button } from "native-base";
 import { H2, Text } from "../../../components/Themed";
 import { useIsFocused } from "@react-navigation/native";
 import Loader from "../../../components/Loader";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AppsList() {
   const isFocused = useIsFocused();
@@ -19,12 +20,6 @@ export default function AppsList() {
 
   useEffect(() => {
     setLoaded(false);
-    // if (location.state?.notification) {
-    // addNotification({
-    //   text: location.state.notification,
-    //   notificationProps: { type: location.state?.type ?? "error" },
-    // });
-    // }
 
     http_methods
       .fetch<{ apps: AppType[]; appsInvitations: AppType[] }>("/apps")
@@ -42,10 +37,6 @@ export default function AppsList() {
   }, [isFocused]);
 
   const handleDelete = (item: AppType) => {
-    // addNotification({
-    //   text: `App ${item.name} was deleted succesfully`,
-    //   notificationProps: { type: "success" },
-    // });
     let apps = appData?.apps?.filter((app) => app.id != item.id);
     updateApps(apps ?? []);
   };
@@ -55,13 +46,6 @@ export default function AppsList() {
       <>
         <Text>Users count: {item.statistics.usersCount}</Text>
       </>
-      // <FlexboxGrid>
-      //   <FlexboxGridItem>
-      //     <HoverTooltip text="Users in space">
-      //       <FontAwesomeIcon icon={faUser} /> {item.statistics.usersCount}
-      //     </HoverTooltip>
-      //   </FlexboxGridItem>
-      // </FlexboxGrid>
     );
   };
 
@@ -69,11 +53,6 @@ export default function AppsList() {
     http_methods
       .post<AppType>(`/apps/${item.id}/invite/accept`, null)
       .then(async (res) => {
-        // addNotification({
-        //   text: `You have joined ${item.name} space!`,
-        //   notificationProps: { type: "success" },
-        // });
-
         setAppsInvitations(appsInvitations.filter((inv) => inv.id != item.id));
         updateApps([...(appData?.apps ?? []), res]);
       });
@@ -91,14 +70,27 @@ export default function AppsList() {
             editHeaderLabel="App options"
             items={appData.apps}
             entity="apps"
-            label={(app) => app.name}
+            label={(app) => (
+              <Text>
+                {app.name}
+                {appData.currentUser?.userOptions.selectedAppId == app.id ? (
+                  <Ionicons
+                    style={{ marginLeft: "auto" }}
+                    size={22}
+                    name={"checkmark"}
+                  />
+                ) : (
+                  ""
+                )}
+              </Text>
+            )}
             onDelete={handleDelete}
             creatable={true}
             buttons={{
-              hasView: false,
+              hasView: true,
               deleteable: (item: AppType) =>
                 appData?.currentUser?.id.toString() == item.ownerId,
-              hasOptions: true,
+              hasOptions: false,
             }}
             additionalInfo={appAdditionalInfo}
           />
@@ -115,10 +107,8 @@ export default function AppsList() {
               entity="apps"
               label={(app) => app.name}
               onDelete={handleDelete}
-              // buttons={{ hasView: false, deleteable: true, hasOptions: true }}
               ownButtons={(item: AppType) => (
                 <Button
-                  // appearance="ghost"
                   size="sm"
                   color="cyan"
                   onPress={() => acceptInvitation(item)}

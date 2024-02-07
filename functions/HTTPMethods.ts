@@ -1,7 +1,7 @@
 import { host } from "../constants/Host";
 import { DynamicallyFilledObject } from "../interfaces/DefaultTypes";
 import * as SecureStore from "expo-secure-store";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 async function post<T>(
   path: string,
@@ -19,6 +19,7 @@ async function post<T>(
       },
     })
     .then((res) => res.data);
+  // .catch((err: AxiosError) => err.response);
 }
 
 async function put<T>(
@@ -37,8 +38,8 @@ async function put<T>(
         Authorization: token ? `Bearer ${token}` : "",
       },
     })
-    .then((res) => res.data)
-    .catch((err) => console.log(err));
+    .then((res) => res.data);
+  // .catch((err: AxiosError) => err.response);
 }
 
 async function fetchObject<T>(path: string): Promise<T> {
@@ -53,6 +54,7 @@ async function fetchObject<T>(path: string): Promise<T> {
       },
     })
     .then((res) => res.data);
+  // .catch((err: AxiosError) => err.response);
 }
 
 async function sendDelete<T>(path: string): Promise<T> {
@@ -67,6 +69,7 @@ async function sendDelete<T>(path: string): Promise<T> {
       },
     })
     .then((res) => res.data);
+  // .catch((err: AxiosError) => err.response);
 }
 
 export const http_methods = {

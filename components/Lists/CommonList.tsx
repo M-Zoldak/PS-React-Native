@@ -5,7 +5,10 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { ActionButtonsType } from "../../interfaces/DefaultTypes";
+import {
+  ActionButtonsType,
+  DynamicallyFilledObject,
+} from "../../interfaces/DefaultTypes";
 import { useAppDataContext } from "../../contexts/AppDataContext";
 import { http_methods } from "../../functions/HTTPMethods";
 import {
@@ -50,6 +53,7 @@ type CommonListProps<T> = {
   onEditLabel?: (name: string, item: T) => void;
   filters?: Array<{ value: string; label: string }>;
   creatable?: boolean;
+  searchProp?: string;
   creatableAsButton?: boolean;
   createHeaderLabel: string;
   editHeaderLabel: string;
@@ -80,6 +84,7 @@ export default function CommonList<T>({
   editableLabel,
   onEditLabel,
   filters,
+  searchProp = "name",
   creatable = false,
   creatableAsButton = false,
   createHeaderLabel,
@@ -294,7 +299,11 @@ export default function CommonList<T>({
           {[{ label: "None", value: "none" }, ...(filters ?? [])]
             .filter((el) => el)
             .map((filter) => (
-              <Select.Item label={filter.label} value={filter.value} />
+              <Select.Item
+                key={filter.value}
+                label={filter.label}
+                value={filter.value}
+              />
             ))}
           {/* <Select.Item label="None" value="none"/> */}
         </Select>
@@ -346,9 +355,16 @@ export default function CommonList<T>({
     );
   };
 
-  const searchFilter = (item: CommonListItemProps) => {
+  const searchFilter = (
+    item: CommonListItemProps & DynamicallyFilledObject<string>
+  ) => {
     if (item == undefined) return false;
-    return item.name.toLowerCase().includes(searchValue.toLowerCase());
+    // console.log(searchProp);
+    // console.log(item[searchProp]);
+    // console.log(
+    //   item[searchProp]?.toLowerCase().includes(searchValue?.toLowerCase())
+    // );
+    return item[searchProp]?.toLowerCase().includes(searchValue?.toLowerCase());
   };
 
   const renderSearch = () => {
@@ -368,6 +384,8 @@ export default function CommonList<T>({
       </Box>
     );
   };
+
+  // console.log(items);
 
   return (
     <>
@@ -416,9 +434,9 @@ export default function CommonList<T>({
                 justifyContent={"space-between"}
                 flexWrap={"wrap"}
               >
-                {/* <Box> */}
+                {console.log(item.name)}
                 <Text style={styles.titleText}>
-                  {label(item as T)}
+                  {label(item as T) ?? " t"}
                   {/* {editableLabel ? (
                       <Button>
                         <FontAwesomeIcon icon={faEdit} size="sm" />

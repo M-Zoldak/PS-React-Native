@@ -2,6 +2,7 @@ import ViewContainer from "../components/ViewContainer";
 import { useLocalSearchParams } from "expo-router";
 import Project from "./(app)/projects/project";
 import Client from "./(app)/client/client";
+import App from "./(app)/app/app";
 
 export default function ModalScreen() {
   const params = useLocalSearchParams();
@@ -19,6 +20,13 @@ export default function ModalScreen() {
         return (
           <ViewContainer>
             <Client />
+          </ViewContainer>
+        );
+      }
+      case App.name.toLowerCase() + "s": {
+        return (
+          <ViewContainer>
+            <App />
           </ViewContainer>
         );
       }

@@ -5,6 +5,7 @@ import { AddressType } from "../../../interfaces/EntityTypes/AddressType";
 import { http_methods } from "../../../functions/HTTPMethods";
 import { ViewComponent } from "react-native";
 import FormComponent from "../../../components/Forms/FormComponent";
+import Loader from "../../../components/Loader";
 
 export default function AddressOptions() {
   const { appData } = useAppDataContext();
@@ -26,31 +27,26 @@ export default function AddressOptions() {
   }, []);
 
   return (
-    <ViewComponent
-    //   title={address ? `Address options` : "Loading..."}
-    //   activePage="Clients"
-    >
-      {/* <Backlink link={`/clients/${params.id}/options`} /> */}
-
-      {/* <ContentLoader loaded={loaded}> */}
-      {/* <MainTitle>
+    <ViewComponent>
+      <Loader loaded={loaded}>
+        {/* <MainTitle>
           {address &&
             `[${address.postal}] ${address.city} ${address.street} options`}
         </MainTitle> */}
 
-      <FormComponent<AddressType>
-        entity="addresses"
-        prependURI={`/clients/${params.id}`}
-        updatePath={{ id: params.addressId as string }}
-        onSuccess={(address) => {
-          setAddress(address);
-          // addNotification({
-          //   text: `Address was succesfully updated.`,
-          //   notificationProps: { type: "success" },
-          // });
-        }}
-      />
-      {/* </ContentLoader> */}
+        <FormComponent<AddressType>
+          entity="addresses"
+          prependURI={`/clients/${params.id}`}
+          updatePath={{ id: params.addressId as string }}
+          onSuccess={(address) => {
+            setAddress(address);
+            // addNotification({
+            //   text: `Address was succesfully updated.`,
+            //   notificationProps: { type: "success" },
+            // });
+          }}
+        />
+      </Loader>
     </ViewComponent>
   );
 }

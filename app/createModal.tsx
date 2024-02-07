@@ -6,8 +6,6 @@ export default function CreateModalScreen<T>() {
   const navigator = useNavigation();
   const params = useLocalSearchParams();
 
-  console.log(params);
-
   return (
     <ViewContainer>
       <Stack.Screen

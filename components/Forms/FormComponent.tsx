@@ -18,6 +18,7 @@ import { useAppDataContext } from "../../contexts/AppDataContext";
 import { useLocalSearchParams } from "expo-router";
 import Loader from "../Loader";
 import { Text } from "../Themed";
+import { AxiosError } from "axios";
 
 type FormComponentProps<T> = {
   onSuccess: (data: T) => void;
@@ -90,9 +91,10 @@ export default function FormComponent<T>({
             `${params.prependURI ?? ""}/${entity}${sendDataPath}`,
             formValues
           )
-          .then((data) => onSuccess(data))
-          .catch((err: Error) => {
-            let errors = JSON.parse(err.message);
+          .then(onSuccess)
+          .catch((err: AxiosError) => {
+            // console.log(err.response);
+            let errors = err.response?.data as DynamicallyFilledObject<string>;
             let updatedFormFields: FormDataType[] = [];
             Object.keys(errors).forEach((key: string) => {
               updatedFormFields = formFields.map((field: FormDataType) => {
@@ -107,9 +109,9 @@ export default function FormComponent<T>({
             `${params.prependURI ?? ""}/${entity}${sendDataPath}`,
             formValues
           )
-          .then((data) => onSuccess(data))
-          .catch((err: Error) => {
-            let errors = JSON.parse(err.message);
+          .then(onSuccess)
+          .catch((err: AxiosError) => {
+            let errors = err.response?.data as DynamicallyFilledObject<string>;
             let updatedFormFields: FormDataType[] = [];
             Object.keys(errors).forEach((key: string) => {
               updatedFormFields = formFields.map((field: FormDataType) => {
@@ -154,7 +156,8 @@ export default function FormComponent<T>({
               value={field.value}
               // {...field}
             />
-            {field.error && (
+            <Text>{field.error}</Text>
+            {field.error?.length > 0 && (
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
@@ -174,19 +177,12 @@ export default function FormComponent<T>({
         );
       }
       case "select": {
-        console.log(field.value);
-        console.log(field.options);
         return (
           // <Form.Group controlId={field.name} key={key}>
           <FormControl key={key}>
             <FormControl.Label>{field.label} </FormControl.Label>
             <Select
-              // placeholder={
-              //   field.options?.length < 1 ? "Nothing to choose from" : ""
-              // }
-
               selectedValue={field.value.toString() ?? ""}
-              // defaultValue={field.value ?? ""}
               onValueChange={(val) => updateInput(val, field.name)}
             >
               {field.options?.map((item, key2) => (
@@ -197,7 +193,7 @@ export default function FormComponent<T>({
                 />
               ))}
             </Select>
-            {field.error && (
+            {field.error?.length > 0 && (
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
@@ -226,7 +222,7 @@ export default function FormComponent<T>({
                 />
               }
             />
-            {field.error && (
+            {field.error?.length > 0 && (
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
@@ -263,7 +259,7 @@ export default function FormComponent<T>({
               value={field.value}
               // {...field}
             />
-            {field.error && (
+            {field.error?.length > 0 && (
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >

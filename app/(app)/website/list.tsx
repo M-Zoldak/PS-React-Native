@@ -25,10 +25,12 @@ export default function WebsitesList() {
     http_methods
       .fetch<WebsiteType[]>(`/websites`)
       .then((data) => {
+        console.log(data);
         setWebsites(data);
         setLoaded(true);
       })
       .catch((err: Error) => {
+        console.log(err.message);
         // addNotification({ text: err.message });
       });
   }, [appData, isFocused]);
@@ -49,17 +51,17 @@ export default function WebsitesList() {
   };
 
   // console.log(appData.currentUser?.currentAppRole.permissions.websites);
-
   return (
     <ViewContainer>
       <Loader loaded={loaded}>
-        <CommonList<WebsiteType>
-          createHeaderLabel="New website"
-          editHeaderLabel="Website options"
-          onEmpty="You don't have any websites yet. Add one now!"
-          items={websites}
-          label={(website) => {
-            return (
+        {websites && (
+          <CommonList<WebsiteType>
+            createHeaderLabel="New website"
+            editHeaderLabel="Website options"
+            onEmpty="You don't have any websites yet. Add one now!"
+            items={websites}
+            searchProp="domain"
+            label={(website) => (
               <Link
                 href={
                   new URL("/", `https://www.${website.domain.toLowerCase()}/`)
@@ -68,33 +70,34 @@ export default function WebsitesList() {
               >
                 {website.domain}{" "}
               </Link>
-            );
-          }}
-          entity="websites"
-          onDelete={(item) => {
-            let newWebsites = websites.filter(
-              (website) => website.id != item.id
-            );
-            setWebsites(newWebsites);
-            // addNotification({
-            //   text: `Website ${item.domain} was deleted succesfully`,
-            //   notificationProps: { type: "success" },
-            // });
-          }}
-          creatable={true}
-          buttons={{
-            deleteable:
-              appData?.currentUser?.currentAppRole?.permissions?.websites
-                ?.deleteable,
-            hasOptions:
-              appData?.currentUser?.currentAppRole?.permissions?.websites
-                ?.hasOptions,
-            hasView:
-              appData?.currentUser?.currentAppRole?.permissions?.websites
-                ?.hasView,
-          }}
-          additionalInfo={websiteAdditionalInfo}
-        />
+            )}
+            entity="websites"
+            onDelete={(item) => {
+              let newWebsites = websites.filter(
+                (website) => website.id != item.id
+              );
+              setWebsites(newWebsites);
+              // addNotification({
+              //   text: `Website ${item.domain} was deleted succesfully`,
+              //   notificationProps: { type: "success" },
+              // });
+            }}
+            creatable={true}
+            buttons={{
+              deleteable:
+                appData?.currentUser?.currentAppRole?.permissions?.websites
+                  ?.deleteable,
+              hasOptions:
+                appData?.currentUser?.currentAppRole?.permissions?.websites
+                  ?.hasOptions,
+              hasView:
+                false &&
+                appData?.currentUser?.currentAppRole?.permissions?.websites
+                  ?.hasView,
+            }}
+            additionalInfo={websiteAdditionalInfo}
+          />
+        )}
       </Loader>
     </ViewContainer>
   );

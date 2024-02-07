@@ -1,28 +1,19 @@
 import {
   DrawerContentComponentProps,
-  DrawerContentScrollView,
   DrawerItem,
   DrawerItemList,
-  DrawerView,
   createDrawerNavigator,
 } from "@react-navigation/drawer";
 import Dashboard from "./dashboard";
-import {
-  SafeAreaProvider,
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import WebsitesList from "./website/list";
 import Separator from "../../components/Separator";
-import { Text } from "../../components/Themed";
 import { StyleSheet } from "react-native";
 import { useAppDataContext } from "../../contexts/AppDataContext";
 import * as SecureStorage from "expo-secure-store";
 import AppsList from "./app/list";
 import ClientsList from "./client/list";
 import ProjectsList from "./projects/list";
-import Project from "./projects/project";
-import { Stack } from "expo-router";
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { clear, appData } = useAppDataContext();
@@ -67,6 +58,7 @@ export default function TabLayout() {
   return (
     <>
       <Drawer.Navigator
+        detachInactiveScreens
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           headerShadowVisible: true,
