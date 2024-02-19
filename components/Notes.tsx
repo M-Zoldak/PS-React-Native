@@ -43,24 +43,19 @@ export default function Notes({ notes, postUrl }: NotesType) {
             return (
               // <List.Item key={index}>
               <Box
-                marginTop={index == 0 ? 2 : 0}
+                marginTop={index == 0 ? 0 : 1}
                 padding={3}
                 key={index}
                 display={"flex"}
                 flexDir={"row"}
-                // h={70}
+                mt={2}
                 borderWidth={1}
-                borderBottomWidth={Object.is(notes.length - 1, index) ? 0 : 1}
                 borderColor={"gray.200"}
                 alignItems={"center"}
                 justifyContent={"space-between"}
                 flexWrap={"wrap"}
               >
-                <Text
-                // style={{ display: "inline" }}
-                >
-                  {`${note.user.name}`}{" "}
-                </Text>
+                <Text>{`${note.user.name}`} </Text>
                 <Text>{`${date.toLocaleDateString(
                   "pl"
                 )} ${date.toLocaleTimeString("pl")}`}</Text>

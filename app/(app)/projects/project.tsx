@@ -270,8 +270,9 @@ export default function Project() {
           onEmpty="This project don't have any tasks yet. Create one!"
           label={(task) => task.name}
           entity="tasks"
-          items={tasks}
+          items={tasks.filter((t) => !t.completed)}
           creatable
+          checkable
           prependURI={`/projects/${params.id}`}
           sortingItems={[{ label: "Name", value: "name" }]}
           sortingDefaults={{ field: "name" }}
@@ -279,7 +280,69 @@ export default function Project() {
             let newTasks = tasks.filter((t) => t.id != task.id);
             setTasks(newTasks);
           }}
+          buttons={{
+            deleteable:
+              appData.currentUser?.currentAppRole.permissions.projects
+                ?.deleteable,
+            hasView:
+              false &&
+              appData.currentUser?.currentAppRole.permissions.projects
+                ?.deleteable,
+            hasOptions:
+              appData.currentUser?.currentAppRole.permissions.projects
+                ?.hasOptions,
+          }}
+          onCheck={(task: TaskType) => {
+            let nTasks = tasks.map((t) => {
+              if (task.id == t.id) {
+                t.completed = task.completed;
+              }
+              return t;
+            });
+            setTasks(nTasks);
+          }}
         />
+      )}
+      {tasks?.filter((t) => t.completed).length > 0 && (
+        <>
+          <H2>Finished tasks</H2>
+          <CommonList<TaskType>
+            createHeaderLabel=""
+            editHeaderLabel=""
+            onEmpty="This project don't have any tasks yet. Create one!"
+            label={(task) => task.name}
+            entity="tasks"
+            items={tasks.filter((t) => t.completed)}
+            prependURI={`/projects/${params.id}`}
+            // sortingItems={[{ label: "Name", value: "name" }]}
+            // sortingDefaults={{ field: "name" }}
+            checkable
+            onCheck={(task: TaskType) => {
+              let nTasks = tasks.map((t) => {
+                if (task.id == t.id) {
+                  t.completed = task.completed;
+                }
+                return t;
+              });
+              setTasks(nTasks);
+            }}
+            onDelete={(task) => {
+              // addNotification({
+              //   text: `Task ${task.name} was deleted`,
+              //   notificationProps: { type: "success" },
+              // });
+              let nTasks = tasks.filter((t) => t.id != task.id);
+              setTasks(nTasks);
+            }}
+            buttons={{
+              hasView: false,
+              hasOptions: false,
+              deleteable:
+                appData?.currentUser?.currentAppRole?.permissions?.projects
+                  ?.deleteable,
+            }}
+          />
+        </>
       )}
       {/* </Box> */}
 

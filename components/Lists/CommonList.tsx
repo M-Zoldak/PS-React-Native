@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ReactElement, ReactNode, useRef, useState } from "react";
 import {
   ActionButtonsType,
   DynamicallyFilledObject,
@@ -15,6 +9,7 @@ import {
   AlertDialog,
   Box,
   Button,
+  Checkbox,
   Fab,
   Input,
   InputGroup,
@@ -24,7 +19,7 @@ import {
 import { H3, Text } from "../Themed";
 import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 
 export type CommonListItemProps = {
   id: string;
@@ -36,6 +31,7 @@ type CommonListProps<T> = {
   items: Array<CommonListItemProps>;
   entity: string;
   onDelete: (item: T) => void;
+  onCheck?: (item: T, value: boolean) => void;
   buttons?: ActionButtonsType;
   additionalInfo?: (item: T) => ReactElement;
   prependURI?: string;
@@ -58,6 +54,7 @@ type CommonListProps<T> = {
   createHeaderLabel: string;
   editHeaderLabel: string;
   search?: { label: string; value: string };
+  checkable?: boolean;
 };
 
 export default function CommonList<T>({
@@ -70,6 +67,7 @@ export default function CommonList<T>({
   },
   entity,
   onDelete,
+  onCheck,
   additionalInfo,
   ownButtons,
   label,
@@ -90,6 +88,7 @@ export default function CommonList<T>({
   createHeaderLabel,
   editHeaderLabel,
   search,
+  checkable = false,
 }: CommonListProps<T>) {
   // const navigation = useNavigation();
   const { appData } = useAppDataContext();
@@ -358,13 +357,16 @@ export default function CommonList<T>({
   const searchFilter = (
     item: CommonListItemProps & DynamicallyFilledObject<string>
   ) => {
+    if (!searchValue || searchValue?.trim().length == 0) return true;
     if (item == undefined) return false;
     // console.log(searchProp);
     // console.log(item[searchProp]);
     // console.log(
     //   item[searchProp]?.toLowerCase().includes(searchValue?.toLowerCase())
     // );
-    return item[searchProp]?.toLowerCase().includes(searchValue?.toLowerCase());
+    return item[searchProp]
+      ?.toLowerCase()
+      ?.includes(searchValue?.toLowerCase());
   };
 
   const renderSearch = () => {
@@ -434,18 +436,28 @@ export default function CommonList<T>({
                 justifyContent={"space-between"}
                 flexWrap={"wrap"}
               >
-                {console.log(item.name)}
-                <Text style={styles.titleText}>
-                  {label(item as T) ?? " t"}
-                  {/* {editableLabel ? (
-                      <Button>
-                        <FontAwesomeIcon icon={faEdit} size="sm" />
-                      </Button>
-                    ) : (
-                      <></>
-                    )} */}
-                </Text>
-                {/* </Box> */}
+                {checkable && (
+                  <Checkbox
+                    // value={item.completed ? 1 : 0}
+                    /* @ts-ignore */
+                    isChecked={item.completed ? true : false}
+                    /* @ts-ignore */
+                    checked={item.completed ? true : false}
+                    onChange={async (val: boolean) => {
+                      await http_methods.put(
+                        `${prependURI}/${entity}/${item.id}/updateCheckbox`,
+                        {
+                          completed: val,
+                        }
+                      );
+                      /* @ts-ignore */
+                      item.completed = val;
+                      /* @ts-ignore */
+                      onCheck(item as T, val);
+                    }}
+                  />
+                )}
+                <Text style={styles.titleText}>{label(item as T)}</Text>
                 <Box
                   display={"flex"}
                   flexDirection={"row"}
@@ -559,5 +571,8 @@ export default function CommonList<T>({
 const styles = StyleSheet.create({
   titleText: {
     fontSize: 18,
+    textAlign: "left",
+    marginRight: "auto",
+    // marginLeft: 2,
   },
 });
